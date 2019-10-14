@@ -27,45 +27,20 @@ console.log('Server started at port 8080')
 );
 
 //Define table
-const table='/tasks';
+const table='/calories';
 
-//CREATE
-app.post(table,(req,res)=>{
-  let task=req.body;
-  con.query("INSERT INTO todo.tasks SET ?",task,(err,rows,fields)=>{
-  if(err) throw err;
-  res.send(JSON.stringify(rows))
-  })
-})
-
-//READ
-app.get(table,(req,res)=>{
-  con.query('SELECT * from todo.tasks',(err,rows,fields)=>{
+app.get("/",(req,res)=>{
+  con.query('SELECT * from harmony.calories',(err,rows,fields)=>{
     if(err) throw err;
     res.json(rows);
+    console.log("called");
   })
 })
 
-//UPDATE
-app.put(table+'/:id',(req,res)=>{
-  let task=req.body;
-  con.query('UPDATE todo.tasks SET `todo_description`=? WHERE `task_id`=?',[task.todo_description,req.params.id],(err,rows,fields)=>{
-  if(err) throw err;
-  res.send('Updated Successfully')
-  })
-})
-
-//DELETE
-app.delete(table+'/:id',(req,res)=>{
-  con.query('DELETE FROM todo.tasks WHERE `task_id`=?',[req.params.id],(err,rows,fields)=>{
+app.get(table+'/:name',(req,res)=>{
+  con.query('SELECT * FROM harmony.calories WHERE `name`=?',[req.params.name],(err,rows,fields)=>{
     if(err) throw err;
-    res.send('Task Deleted Successfully')
-  })
-})
-
-app.get(table+'/:id',(req,res)=>{
-  con.query('SELECT * FROM todo.tasks WHERE `task_id`=?',[req.params.id],(err,rows,fields)=>{
-    if(err) throw err;
-    res.json(rows);
+    let resultFromDb= Object.values(rows)[0]; 
+    res.json(resultFromDb);
   })
 })
